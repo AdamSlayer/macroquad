@@ -404,25 +404,25 @@ pub fn draw_text_centered_ex(text: &str, center_x: f32, center_y: f32, params: T
 		let font_data = &font.characters.lock().unwrap()[&(character, font_size)];
 		let glyph = atlas.get(font_data.sprite).unwrap().rect;
 		let angle_rad = params.rotation;
-		let left_coord = font_data.offset_x * font_scale_x * angle_rad.cos()
-			- glyph.h as f32 * font_scale_y * angle_rad.sin();
-		let top_coord = font_data.offset_x * font_scale_x * angle_rad.sin()
-			+ glyph.h as f32 * font_scale_y * angle_rad.cos();
+		let left_coord = font_data.offset_x as f32 * font_scale_x * angle_rad.cos()
+			- glyph.h * font_scale_y * angle_rad.sin();
+		let top_coord = font_data.offset_x as f32 * font_scale_x * angle_rad.sin()
+			+ glyph.h * font_scale_y * angle_rad.cos();
 		
 		current_x += font_data.advance * font_scale_x / 2.0;
 		
 		let dest = Rect::new(
 			(left_coord + current_x) / dpi_scaling,
 			(top_coord + current_y) / dpi_scaling,
-			glyph.w as f32 * font_scale_x / dpi_scaling,
-			glyph.h as f32 * font_scale_y / dpi_scaling,
+			glyph.w * font_scale_x / dpi_scaling,
+			glyph.h * font_scale_y / dpi_scaling,
 		);
 		
 		let source = Rect::new(
-			glyph.x as f32,
-			glyph.y as f32,
-			glyph.w as f32,
-			glyph.h as f32,
+			glyph.x,
+			glyph.y,
+			glyph.w,
+			glyph.h,
 		);
 		
 		crate::texture::draw_texture_ex(
