@@ -362,7 +362,11 @@ pub fn draw_text_ex(text: &str, x: f32, y: f32, params: TextParams) {
     }
 }
 
-pub fn draw_text_centered_ex(text: &str, center_x: f32, center_y: f32, params: TextParams) {
+
+/// Draw text with custom params such as font, font size and font scale.
+///
+/// The text is centered, so the x and y are exactly in the middle of the rendered text.
+pub fn draw_text_centered_ex(text: &str, x: f32, y: f32, params: TextParams) {
 	let font = params
 		.font
 		.unwrap_or(&get_context().fonts_storage.default_font);
@@ -373,24 +377,14 @@ pub fn draw_text_centered_ex(text: &str, center_x: f32, center_y: f32, params: T
 	
 	let font_size = (params.font_size as f32 * dpi_scaling).ceil() as u16;
 	
-	let mut total_width = 0.;
+	// calculate the width
+	let mut width = 0.;
 	for character in text.chars() {
-		if !font
-			.characters
-			.lock()
-			.unwrap()
-			.contains_key(&(character, font_size))
-		{
-			font.cache_glyph(character, font_size);
-		}
 		let font_data = &font.characters.lock().unwrap()[&(character, font_size)];
-		total_width += font_data.advance * font_scale_x;
+		width += font_data.offset_x as f32;
 	}
 	
-	let half_width = total_width / 2.0;
-	let mut current_x = center_x - half_width;
-	let mut current_y = center_y;
-	
+	let mut total_width = -width/2.;
 	for character in text.chars() {
 		if !font
 			.characters
@@ -404,25 +398,27 @@ pub fn draw_text_centered_ex(text: &str, center_x: f32, center_y: f32, params: T
 		let font_data = &font.characters.lock().unwrap()[&(character, font_size)];
 		let glyph = atlas.get(font_data.sprite).unwrap().rect;
 		let angle_rad = params.rotation;
-		let left_coord = font_data.offset_x as f32 * font_scale_x * angle_rad.cos()
-			- glyph.h * font_scale_y * angle_rad.sin();
-		let top_coord = font_data.offset_x as f32 * font_scale_x * angle_rad.sin()
-			+ glyph.h * font_scale_y * angle_rad.cos();
+		let left_coord = (font_data.offset_x as f32 * font_scale_x + total_width) * angle_rad.cos()
+			+ (glyph.h as f32 * font_scale_y + font_data.offset_y as f32 * font_scale_y)
+			* angle_rad.sin();
+		let top_coord = (font_data.offset_x as f32 * font_scale_x + total_width) * angle_rad.sin()
+			+ (0.0 - glyph.h as f32 * font_scale_y - font_data.offset_y as f32 * font_scale_y)
+			* angle_rad.cos();
 		
-		current_x += font_data.advance * font_scale_x / 2.0;
+		total_width += font_data.advance * font_scale_x;
 		
 		let dest = Rect::new(
-			(left_coord + current_x) / dpi_scaling,
-			(top_coord + current_y) / dpi_scaling,
-			glyph.w * font_scale_x / dpi_scaling,
-			glyph.h * font_scale_y / dpi_scaling,
+			left_coord / dpi_scaling as f32 + x,
+			top_coord / dpi_scaling as f32 + y,
+			glyph.w as f32 / dpi_scaling as f32 * font_scale_x,
+			glyph.h as f32 / dpi_scaling as f32 * font_scale_y,
 		);
 		
 		let source = Rect::new(
-			glyph.x,
-			glyph.y,
-			glyph.w,
-			glyph.h,
+			glyph.x as f32,
+			glyph.y as f32,
+			glyph.w as f32,
+			glyph.h as f32,
 		);
 		
 		crate::texture::draw_texture_ex(
@@ -436,15 +432,12 @@ pub fn draw_text_centered_ex(text: &str, center_x: f32, center_y: f32, params: T
 				dest_size: Some(vec2(dest.w, dest.h)),
 				source: Some(source),
 				rotation: angle_rad,
-				pivot: Some(vec2(center_x, center_y)),
+				pivot: Option::Some(vec2(dest.x, dest.y)),
 				..Default::default()
 			},
 		);
-		
-		current_x += font_data.advance * font_scale_x / 2.0;
 	}
 }
-
 
 /// Get the text center.
 pub fn get_text_center(
