@@ -454,13 +454,12 @@ pub fn draw_text_centered_ex(text: &str, x: f32, y: f32, params: TextParams) {
 ///
 /// You can't just use text.len() * font_size or something similar, because of variable width fonts.
 /// e.g., WWW is wider than III
-pub fn get_text_width(text: &str, x: f32, y: f32, params: TextParams) {
+pub fn get_text_width(text: &str, params: TextParams) -> f32 {
 	let font = params
 		.font
 		.unwrap_or(&get_context().fonts_storage.default_font);
 	
 	let font_scale_x = params.font_scale * params.font_scale_aspect;
-	let font_scale_y = params.font_scale;
 	let dpi_scaling = miniquad::window::dpi_scale();
 	
 	let font_size = (params.font_size as f32 * dpi_scaling).ceil() as u16;
@@ -479,6 +478,8 @@ pub fn get_text_width(text: &str, x: f32, y: f32, params: TextParams) {
 		let font_data = &font.characters.lock().unwrap()[&(character, font_size)];
 		width += font_data.advance * font_scale_x;
 	}
+	
+	width
 }
 
 
