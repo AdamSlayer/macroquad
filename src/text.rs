@@ -380,8 +380,16 @@ pub fn draw_text_centered_ex(text: &str, x: f32, y: f32, params: TextParams) {
 	// calculate the width
 	let mut width = 0.;
 	for character in text.chars() {
+		if !font
+			.characters
+			.lock()
+			.unwrap()
+			.contains_key(&(character, font_size))
+		{
+			font.cache_glyph(character, font_size);
+		}
 		let font_data = &font.characters.lock().unwrap()[&(character, font_size)];
-		width += font_data.offset_x as f32;
+		width += font_data.advance * font_scale_x;
 	}
 	
 	let mut total_width = -width/2.;
