@@ -365,7 +365,8 @@ pub fn draw_text_ex(text: &str, x: f32, y: f32, params: TextParams) {
 
 /// Draw text with custom params such as font, font size and font scale.
 ///
-/// The text is centered, so the x and y are exactly in the middle of the rendered text.
+/// The text is centered along the X axis, and Y is the very top of the rendered text.
+/// This is because it's not clear where the middle of the text should be vertically.
 pub fn draw_text_centered_ex(text: &str, x: f32, y: f32, params: TextParams) {
 	let font = params
 		.font
@@ -446,6 +447,24 @@ pub fn draw_text_centered_ex(text: &str, x: f32, y: f32, params: TextParams) {
 		);
 	}
 }
+
+
+
+/// Returns the width the text would have if it was rendered. Useful for positioning or scaling text in a custom-made UI
+///
+/// You can't just use text.len() * font_size or something similar, because of variable width fonts.
+/// e.g., WWW is wider than III
+pub fn get_text_width(text: &str, params: &TextParams) -> f32 {
+	let font = params.font.unwrap_or(&get_context().fonts_storage.default_font);
+	let font_size = (params.font_size as f32 * miniquad::window::dpi_scale()).ceil() as u16;
+	let font_scale_x = params.font_scale * params.font_scale_aspect;
+	
+	text.chars().map(|c| {
+		let font_data = font.get_or_cache_glyph(c, font_size);
+		font_data.advance * font_scale_x
+	}).sum()
+}
+
 
 /// Get the text center.
 pub fn get_text_center(
