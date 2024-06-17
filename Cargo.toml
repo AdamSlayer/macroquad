@@ -26,7 +26,7 @@ opt-level = 3
 all-features = true
 
 [dependencies]
-miniquad = { version = "=0.4.2", features = ["log-impl"] }
+miniquad = { git = "https://github.com/AdamSlayer/miniquad", version = "=0.4.2", features = ["log-impl"] }
 quad-rand = "0.2.1"
 glam = {version = "0.27", features = ["scalar-math"] }
 image = { version = "0.24", default-features = false, features = ["png", "tga"] }
@@ -49,7 +49,6 @@ macroquad-platformer = { path = "./physics-platformer" }
 # this allows to use macroquad-particles in examples without two versions of macroquad
 [patch.crates-io]
 macroquad = { path = './' }
-miniquad = { git = "https://github.com/AdamSlayer/miniquad", branch = "master", version = "0.4.2" }
 
 #quad-snd = {path = '../quad-snd'}
 #miniquad = { path = '../miniquad' }
