@@ -1,8 +1,9 @@
+use serde::{Deserialize, Serialize};
 use crate::math::Vec2;
 
 pub use crate::ui::input_handler::KeyCode;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub enum Key {
     Char(char),
     KeyCode(KeyCode),
