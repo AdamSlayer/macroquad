@@ -49,6 +49,7 @@ macroquad-platformer = { path = "./physics-platformer" }
 # this allows to use macroquad-particles in examples without two versions of macroquad
 [patch.crates-io]
 macroquad = { path = './' }
+miniquad = { git = "https://github.com/AdamSlayer/miniquad", branch = "master", version = "0.4.2" }
 
 #quad-snd = {path = '../quad-snd'}
 #miniquad = { path = '../miniquad' }
