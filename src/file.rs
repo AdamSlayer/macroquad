@@ -1,5 +1,7 @@
 //! Cross platform file management functions.
 
+use std::sync::{Arc, Mutex};
+use miniquad::native;
 use crate::{exec, Error};
 
 /// Load file from the path and block until its loaded
@@ -38,6 +40,78 @@ pub async fn load_file(path: &str) -> Result<Vec<u8>, Error> {
 
     load_file_inner(&path).await
 }
+
+/// Read file from the path and block until it's read
+/// Will use filesystem on PC and do HTTP request on web
+pub async fn read_file(path: &str) -> Result<Vec<u8>, Error> {
+	fn read_file_inner(path: &str) -> exec::FileLoadingFuture {
+		use std::sync::{Arc, Mutex};
+		
+		let contents = Arc::new(Mutex::new(None));
+		let path = path.to_owned();
+		
+		{
+			let contents = contents.clone();
+			let err_path = path.clone();
+			
+			miniquad::fs::read_file(&path, move |bytes| {
+				*contents.lock().unwrap() = Some(bytes.map_err(|kind| Error::FileError {
+					kind,
+					path: err_path.clone(),
+				}));
+			});
+		}
+		
+		exec::FileLoadingFuture { contents }
+	}
+	
+	#[cfg(target_os = "ios")]
+		let _ = std::env::set_current_dir(std::env::current_exe().unwrap().parent().unwrap());
+	
+	#[cfg(not(target_os = "android"))]
+		let path = if let Some(ref pc_assets) = crate::get_context().pc_assets_folder {
+		format!("{}/{}", pc_assets, path)
+	} else {
+		path.to_string()
+	};
+	
+	read_file_inner(&path).await
+}
+
+/// Save file to the path and block until it's saved
+pub async fn save_file(path: &str, data: &[u8]) -> bool {
+	fn save_file_inner(path: &str, data: &[u8]) -> Arc<Mutex<bool>> {
+		use std::sync::{Arc, Mutex};
+		
+		let result = Arc::new(Mutex::new(false));
+		let path = path.to_owned();
+		let data = data.to_vec();
+		
+		{
+			let result = result.clone();
+			let err_path = path.clone();
+			
+			miniquad::fs::save_file(&path, &data, move |success| {
+				*result.lock().unwrap() = success;
+			});
+		}
+		
+		result
+	}
+	
+	#[cfg(target_os = "ios")]
+		let _ = std::env::set_current_dir(std::env::current_exe().unwrap().parent().unwrap());
+	
+	#[cfg(not(target_os = "android"))]
+		let path = if let Some(ref pc_assets) = crate::get_context().pc_assets_folder {
+		format!("{}/{}", pc_assets, path)
+	} else {
+		path.to_string()
+	};
+	
+	*save_file_inner(&path, data).lock().unwrap()
+}
+
 
 /// Load string from the path and block until its loaded.
 /// Right now this will use load_file and `from_utf8_lossy` internally, but
