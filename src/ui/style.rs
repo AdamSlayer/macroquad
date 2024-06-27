@@ -34,7 +34,7 @@ pub struct StyleBuilder {
 }
 
 impl StyleBuilder {
-    pub(crate) fn new(default_font: Arc<Mutex<Font>>, atlas: Arc<Mutex<Atlas>>) -> StyleBuilder {
+    pub fn new(default_font: Arc<Mutex<Font>>, atlas: Arc<Mutex<Atlas>>) -> StyleBuilder {
         StyleBuilder {
             atlas,
             font: default_font,
@@ -217,31 +217,31 @@ impl StyleBuilder {
 
 #[derive(Debug, Clone)]
 pub struct Style {
-    pub(crate) background: Option<SpriteKey>,
-    pub(crate) background_hovered: Option<SpriteKey>,
-    pub(crate) background_clicked: Option<SpriteKey>,
-    pub(crate) color: Color,
-    pub(crate) color_inactive: Option<Color>,
-    pub(crate) color_hovered: Color,
-    pub(crate) color_clicked: Color,
-    pub(crate) color_selected: Color,
-    pub(crate) color_selected_hovered: Color,
+    pub background: Option<SpriteKey>,
+    pub background_hovered: Option<SpriteKey>,
+    pub background_clicked: Option<SpriteKey>,
+    pub color: Color,
+    pub color_inactive: Option<Color>,
+    pub color_hovered: Color,
+    pub color_clicked: Color,
+    pub color_selected: Color,
+    pub color_selected_hovered: Color,
     /// Margins of background image
     /// Applies to background/background_hovered/background_clicked etc
     /// Part of the texture within the margin would not be scaled, which is useful
     /// for things like element borders
-    pub(crate) background_margin: Option<RectOffset>,
+    pub background_margin: Option<RectOffset>,
     /// Margin that do not affect textures
     /// Useful to leave some empty space between element border and element content
     /// Maybe be negative to compensate background_margin when content should overlap the
     /// borders
-    pub(crate) margin: Option<RectOffset>,
-    pub(crate) font: Arc<Mutex<Font>>,
-    pub(crate) text_color: Color,
-    pub(crate) text_color_hovered: Color,
-    pub(crate) text_color_clicked: Color,
-    pub(crate) font_size: u16,
-    pub(crate) reverse_background_z: bool,
+    pub margin: Option<RectOffset>,
+    pub font: Arc<Mutex<Font>>,
+    pub text_color: Color,
+    pub text_color_hovered: Color,
+    pub text_color_clicked: Color,
+    pub font_size: u16,
+    pub reverse_background_z: bool,
 }
 
 impl Style {
@@ -267,7 +267,7 @@ impl Style {
         }
     }
 
-    pub(crate) fn border_margin(&self) -> RectOffset {
+    pub fn border_margin(&self) -> RectOffset {
         let background_offset = self.background_margin.unwrap_or_default();
         let background = self.margin.unwrap_or_default();
 
@@ -279,7 +279,7 @@ impl Style {
         }
     }
 
-    pub(crate) fn text_color(&self, element_state: ElementState) -> Color {
+    pub fn text_color(&self, element_state: ElementState) -> Color {
         let ElementState {
             focused,
             hovered,
@@ -303,7 +303,7 @@ impl Style {
         }
     }
 
-    pub(crate) fn color(&self, element_state: ElementState) -> Color {
+    pub fn color(&self, element_state: ElementState) -> Color {
         let ElementState {
             clicked,
             hovered,
@@ -336,7 +336,7 @@ impl Style {
         self.color
     }
 
-    pub(crate) fn background_sprite(&self, element_state: ElementState) -> Option<SpriteKey> {
+    pub fn background_sprite(&self, element_state: ElementState) -> Option<SpriteKey> {
         let ElementState {
             clicked, hovered, ..
         } = element_state;
@@ -375,7 +375,7 @@ pub struct Skin {
 }
 
 impl Skin {
-    pub(crate) fn new(atlas: Arc<Mutex<Atlas>>, default_font: Arc<Mutex<Font>>) -> Self {
+    pub fn new(atlas: Arc<Mutex<Atlas>>, default_font: Arc<Mutex<Font>>) -> Self {
         Skin {
             label_style: Style {
                 margin: Some(RectOffset::new(2., 2., 2., 2.)),

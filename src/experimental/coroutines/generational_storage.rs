@@ -9,7 +9,7 @@ struct GenerationalCell<T> {
     state: T,
 }
 
-pub(crate) struct GenerationalStorage<T> {
+pub struct GenerationalStorage<T> {
     vec: Vec<Option<GenerationalCell<T>>>,
     free_indices: Vec<(usize, usize)>,
 }
@@ -124,7 +124,7 @@ impl<T> GenerationalStorage<T> {
         self.vec[id.id] = None;
     }
 
-    pub(crate) fn allocated_memory(&self) -> usize {
+    pub fn allocated_memory(&self) -> usize {
         self.vec.capacity() * std::mem::size_of::<GenerationalCell<T>>()
     }
 }

@@ -595,7 +595,7 @@ pub struct QuadGl {
     state: GlState,
     start_time: f64,
 
-    pub(crate) white_texture: miniquad::TextureId,
+    pub white_texture: miniquad::TextureId,
     max_vertices: usize,
     max_indices: usize,
 }
@@ -677,7 +677,7 @@ impl QuadGl {
         ))
     }
 
-    pub(crate) fn clear(&mut self, ctx: &mut dyn miniquad::RenderingBackend, color: Color) {
+    pub fn clear(&mut self, ctx: &mut dyn miniquad::RenderingBackend, color: Color) {
         let clear = PassAction::clear_color(color.r, color.g, color.b, color.a);
 
         if let Some(current_pass) = self.state.render_pass {
@@ -817,7 +817,7 @@ impl QuadGl {
         self.draw_calls_count = 0;
     }
 
-    pub(crate) fn capture(&mut self, capture: bool) {
+    pub fn capture(&mut self, capture: bool) {
         self.state.capture = capture;
     }
 
@@ -1003,7 +1003,7 @@ impl QuadGl {
             .or_insert(quad_texture) = quad_texture;
     }
 
-    pub(crate) fn update_drawcall_capacity(
+    pub fn update_drawcall_capacity(
         &mut self,
         ctx: &mut dyn miniquad::RenderingBackend,
         max_vertices: usize,

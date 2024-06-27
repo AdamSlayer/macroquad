@@ -107,7 +107,7 @@ pub fn resume_gl_capture() {
     }
 }
 
-pub(crate) fn reset() {
+pub fn reset() {
     let profiler = get_profiler();
 
     assert!(
@@ -348,7 +348,7 @@ pub struct DrawCallTelemetry {
     pub texture: miniquad::TextureId,
 }
 
-pub(crate) fn track_drawcall(
+pub fn track_drawcall(
     pipeline: &miniquad::Pipeline,
     bindings: &miniquad::Bindings,
     indices_count: usize,

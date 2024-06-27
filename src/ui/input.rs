@@ -18,17 +18,17 @@ pub struct InputCharacter {
 
 #[derive(Default, Clone)]
 pub struct Input {
-    pub(crate) mouse_position: Vec2,
-    pub(crate) is_mouse_down: bool,
-    pub(crate) click_down: bool,
-    pub(crate) click_up: bool,
-    pub(crate) mouse_wheel: Vec2,
-    pub(crate) input_buffer: Vec<InputCharacter>,
-    pub(crate) modifier_ctrl: bool,
-    pub(crate) escape: bool,
-    pub(crate) enter: bool,
-    pub(crate) cursor_grabbed: bool,
-    pub(crate) window_active: bool,
+    pub mouse_position: Vec2,
+    pub is_mouse_down: bool,
+    pub click_down: bool,
+    pub click_up: bool,
+    pub mouse_wheel: Vec2,
+    pub input_buffer: Vec<InputCharacter>,
+    pub modifier_ctrl: bool,
+    pub escape: bool,
+    pub enter: bool,
+    pub cursor_grabbed: bool,
+    pub window_active: bool,
 }
 
 impl Input {

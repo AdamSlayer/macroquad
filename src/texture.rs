@@ -14,14 +14,14 @@ use slotmap::SlotMap;
 use std::sync::Arc;
 
 slotmap::new_key_type! {
-    pub(crate) struct TextureSlotId;
+    pub struct TextureSlotId;
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) struct TextureSlotGuarded(pub TextureSlotId);
+pub struct TextureSlotGuarded(pub TextureSlotId);
 
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) enum TextureHandle {
+pub enum TextureHandle {
     // texture that belongs to macroquad and follows normal garbage collection rules
     Managed(Arc<TextureSlotGuarded>),
     ManagedWeak(TextureSlotId),
@@ -29,7 +29,7 @@ pub(crate) enum TextureHandle {
     Unmanaged(miniquad::TextureId),
 }
 
-pub(crate) struct TexturesContext {
+pub struct TexturesContext {
     textures: SlotMap<crate::texture::TextureSlotId, miniquad::TextureId>,
     removed: Vec<TextureSlotId>,
 }
@@ -347,7 +347,7 @@ pub async fn load_texture(path: &str) -> Result<Texture2D, Error> {
 pub struct RenderPass {
     pub color_texture: Texture2D,
     pub depth_texture: Option<Texture2D>,
-    pub(crate) render_pass: Arc<miniquad::RenderPass>,
+    pub render_pass: Arc<miniquad::RenderPass>,
 }
 
 impl RenderPass {
@@ -573,7 +573,7 @@ pub fn get_screen_data() -> Image {
 /// Texture, data stored in GPU memory
 #[derive(Clone, Debug, PartialEq)]
 pub struct Texture2D {
-    pub(crate) texture: TextureHandle,
+    pub texture: TextureHandle,
 }
 
 impl Drop for TextureSlotGuarded {
@@ -595,7 +595,7 @@ impl Texture2D {
             },
         }
     }
-    pub(crate) fn unmanaged(texture: miniquad::TextureId) -> Texture2D {
+    pub fn unmanaged(texture: miniquad::TextureId) -> Texture2D {
         Texture2D {
             texture: TextureHandle::Unmanaged(texture),
         }
@@ -839,7 +839,7 @@ impl Texture2D {
     }
 }
 
-pub(crate) struct Batcher {
+pub struct Batcher {
     unbatched: Vec<Texture2D>,
     atlas: crate::text::atlas::Atlas,
 }

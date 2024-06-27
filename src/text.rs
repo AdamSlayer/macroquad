@@ -19,7 +19,7 @@ pub mod atlas;
 use atlas::{Atlas, SpriteKey};
 
 #[derive(Debug, Clone)]
-pub(crate) struct CharacterInfo {
+pub struct CharacterInfo {
     pub offset_x: i32,
     pub offset_y: i32,
     pub advance: f32,
@@ -49,7 +49,7 @@ impl std::fmt::Debug for Font {
 }
 
 impl Font {
-    pub(crate) fn load_from_bytes(atlas: Arc<Mutex<Atlas>>, bytes: &[u8]) -> Result<Font, Error> {
+    pub fn load_from_bytes(atlas: Arc<Mutex<Atlas>>, bytes: &[u8]) -> Result<Font, Error> {
         Ok(Font {
             font: Arc::new(fontdue::Font::from_bytes(
                 &bytes[..],
@@ -60,18 +60,18 @@ impl Font {
         })
     }
 
-    pub(crate) fn ascent(&self, font_size: f32) -> f32 {
+    pub fn ascent(&self, font_size: f32) -> f32 {
         self.font.horizontal_line_metrics(font_size).unwrap().ascent
     }
 
-    pub(crate) fn descent(&self, font_size: f32) -> f32 {
+    pub fn descent(&self, font_size: f32) -> f32 {
         self.font
             .horizontal_line_metrics(font_size)
             .unwrap()
             .descent
     }
 
-    pub(crate) fn cache_glyph(&self, character: char, size: u16) {
+    pub fn cache_glyph(&self, character: char, size: u16) {
         if self
             .characters
             .lock()
@@ -118,7 +118,7 @@ impl Font {
             .insert((character, size), character_info);
     }
 
-    pub(crate) fn get(&self, character: char, size: u16) -> Option<CharacterInfo> {
+    pub fn get(&self, character: char, size: u16) -> Option<CharacterInfo> {
         self.characters
             .lock()
             .unwrap()
@@ -126,7 +126,7 @@ impl Font {
             .cloned()
     }
 
-    pub(crate) fn measure_text(
+    pub fn measure_text(
         &self,
         text: &str,
         font_size: u16,
@@ -446,12 +446,12 @@ pub fn measure_text(
     font.measure_text(text, font_size, font_scale, font_scale)
 }
 
-pub(crate) struct FontsStorage {
+pub struct FontsStorage {
     default_font: Font,
 }
 
 impl FontsStorage {
-    pub(crate) fn new(ctx: &mut dyn miniquad::RenderingBackend) -> FontsStorage {
+    pub fn new(ctx: &mut dyn miniquad::RenderingBackend) -> FontsStorage {
         let atlas = Arc::new(Mutex::new(Atlas::new(ctx, miniquad::FilterMode::Linear)));
 
         let default_font = Font::load_from_bytes(atlas, include_bytes!("ProggyClean.ttf")).unwrap();

@@ -24,7 +24,7 @@ pub struct ElementState {
 
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub(crate) enum DrawCommand {
+pub enum DrawCommand {
     DrawCharacter {
         dest: Rect,
         source: Rect,
@@ -135,7 +135,7 @@ impl DrawCommand {
         }
     }
 
-    pub(crate) fn estimate_triangles_budget(&self) -> (usize, usize) {
+    pub fn estimate_triangles_budget(&self) -> (usize, usize) {
         match self {
             DrawCommand::DrawCharacter { .. } => (10, 10),
             DrawCommand::DrawRawTexture { .. } => (10, 10),
@@ -147,7 +147,7 @@ impl DrawCommand {
     }
 }
 
-pub(crate) struct Painter {
+pub struct Painter {
     pub commands: Vec<DrawCommand>,
     pub clipping_zone: Option<Rect>,
     font_atlas: Arc<Mutex<Atlas>>,

@@ -153,7 +153,7 @@ use crate::{
 
 use glam::{vec2, Mat4, Vec2};
 
-pub(crate) mod thread_assert {
+pub mod thread_assert {
     static mut THREAD_ID: Option<std::thread::ThreadId> = None;
 
     pub fn set_thread_id() {
@@ -426,7 +426,7 @@ impl Context {
         }
     }
 
-    pub(crate) fn pixel_perfect_projection_matrix(&self) -> glam::Mat4 {
+    pub fn pixel_perfect_projection_matrix(&self) -> glam::Mat4 {
         let (width, height) = miniquad::window::screen_size();
 
         let dpi = miniquad::window::dpi_scale();
@@ -434,7 +434,7 @@ impl Context {
         glam::Mat4::orthographic_rh_gl(0., width / dpi, height / dpi, 0., -1., 1.)
     }
 
-    pub(crate) fn projection_matrix(&self) -> glam::Mat4 {
+    pub fn projection_matrix(&self) -> glam::Mat4 {
         if let Some(matrix) = self.camera_matrix {
             matrix
         } else {
@@ -442,7 +442,7 @@ impl Context {
         }
     }
 
-    pub(crate) fn perform_render_passes(&mut self) {
+    pub fn perform_render_passes(&mut self) {
         let matrix = self.projection_matrix();
 
         self.gl.draw(get_quad_context(), matrix);

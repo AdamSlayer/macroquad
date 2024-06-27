@@ -53,7 +53,7 @@ impl CoroutineState {
     }
 }
 
-pub(crate) struct CoroutinesContext {
+pub struct CoroutinesContext {
     coroutines: GenerationalStorage<CoroutineState>,
     active_coroutine_now: Option<f64>,
     active_coroutine_delta: Option<f64>,
@@ -86,11 +86,11 @@ impl CoroutinesContext {
         });
     }
 
-    pub(crate) fn allocated_memory(&self) -> usize {
+    pub fn allocated_memory(&self) -> usize {
         self.coroutines.allocated_memory()
     }
 
-    pub(crate) fn active_coroutines_count(&self) -> usize {
+    pub fn active_coroutines_count(&self) -> usize {
         self.coroutines.count()
     }
 }
@@ -234,7 +234,7 @@ pub fn stop_coroutine(coroutine: Coroutine) {
 }
 
 pub struct TimerDelayFuture {
-    pub(crate) remaining_time: f32,
+    pub remaining_time: f32,
 }
 
 impl Future for TimerDelayFuture {

@@ -3,7 +3,7 @@
 use crate::ui::KeyCode;
 
 #[derive(Default)]
-pub(crate) struct KeyRepeat {
+pub struct KeyRepeat {
     character_this_frame: Option<KeyCode>,
     active_character: Option<KeyCode>,
     repeating_character: Option<KeyCode>,
@@ -16,7 +16,7 @@ impl KeyRepeat {
     }
 
     // allow the key to be pressed once and than to be pressed all the time but only after some delay
-    pub(crate) fn add_repeat_gap(&mut self, character: KeyCode, _time: f32) -> bool {
+    pub fn add_repeat_gap(&mut self, character: KeyCode, _time: f32) -> bool {
         self.character_this_frame = Some(character);
 
         self.active_character.is_none()
@@ -24,7 +24,7 @@ impl KeyRepeat {
             || self.repeating_character == self.character_this_frame
     }
 
-    pub(crate) fn new_frame(&mut self, time: f32) {
+    pub fn new_frame(&mut self, time: f32) {
         let character_this_frame = self.character_this_frame.take();
 
         if character_this_frame == self.active_character && time - self.pressed_time > 0.5 {

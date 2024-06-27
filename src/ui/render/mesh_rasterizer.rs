@@ -284,7 +284,7 @@ fn get_active_draw_list<'a, 'b>(
     draw_lists.last_mut().unwrap()
 }
 
-pub(crate) fn render_command(draw_lists: &mut Vec<DrawList>, command: DrawCommand) {
+pub fn render_command(draw_lists: &mut Vec<DrawList>, command: DrawCommand) {
     let active_draw_list = get_active_draw_list(draw_lists, &command);
 
     match command {

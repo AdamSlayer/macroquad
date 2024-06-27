@@ -29,7 +29,7 @@ pub use style::{Skin, Style, StyleBuilder};
 
 pub use crate::hash;
 
-pub(crate) use render::ElementState;
+pub use render::ElementState;
 
 use std::{
     borrow::Cow,
@@ -111,7 +111,7 @@ impl From<crate::texture::Texture2D> for UiContent<'static> {
     }
 }
 
-pub(crate) struct Window {
+pub struct Window {
     pub id: Id,
     pub parent: Option<Id>,
     // active is set to true when the begin_window is called on this window
@@ -260,7 +260,7 @@ impl StyleStack {
     }
 }
 
-pub(crate) struct TabSelector {
+pub struct TabSelector {
     counter: isize,
     wants: Option<isize>,
     to_change: Option<isize>,
@@ -288,7 +288,7 @@ impl TabSelector {
     }
 
     /// Returns true if this widget should gain focus, because user pressed `Tab` or `Shift + Tab`.
-    pub(crate) fn register_selectable_widget(&mut self, has_focus: bool, input: &Input) -> bool {
+    pub fn register_selectable_widget(&mut self, has_focus: bool, input: &Input) -> bool {
         if has_focus {
             enum PressedTabKey {
                 Tab,
@@ -337,7 +337,7 @@ pub struct Ui {
     skin_stack: StyleStack,
     /// Returns the number of frames that have elapsed since the program started.
     pub frame: u64,
-    pub(crate) time: f32,
+    pub time: f32,
 
     moving: Option<(Id, Vec2)>,
     windows: HashMap<Id, Window>,
@@ -364,8 +364,8 @@ pub struct Ui {
     last_item_clicked: bool,
     last_item_hovered: bool,
 
-    pub(crate) atlas: Arc<Mutex<Atlas>>,
-    pub(crate) default_font: Arc<Mutex<Font>>,
+    pub atlas: Arc<Mutex<Atlas>>,
+    pub default_font: Arc<Mutex<Font>>,
 
     clipboard_selection: String,
     clipboard: Box<dyn crate::ui::ClipboardObject>,
@@ -377,12 +377,12 @@ pub struct Ui {
 }
 
 #[derive(Default)]
-pub(crate) struct AnyStorage {
+pub struct AnyStorage {
     storage: HashMap<Id, Box<dyn std::any::Any>>,
 }
 
 impl AnyStorage {
-    pub(crate) fn get_or_insert_with<T: Default + 'static, F: Fn() -> T>(
+    pub fn get_or_insert_with<T: Default + 'static, F: Fn() -> T>(
         &mut self,
         id: Id,
         f: F,
@@ -394,7 +394,7 @@ impl AnyStorage {
             .unwrap()
     }
 
-    pub(crate) fn get_or_default<T: Default + 'static>(&mut self, id: Id) -> &mut T {
+    pub fn get_or_default<T: Default + 'static>(&mut self, id: Id) -> &mut T {
         self.storage
             .entry(id)
             .or_insert_with(|| Box::new(T::default()))
@@ -403,7 +403,7 @@ impl AnyStorage {
     }
 }
 
-pub(crate) struct WindowContext<'a> {
+pub struct WindowContext<'a> {
     pub window: &'a mut Window,
     pub dragging: &'a mut Option<(Id, DragState)>,
     pub drag_hovered: &'a mut Option<Id>,
@@ -422,7 +422,7 @@ pub(crate) struct WindowContext<'a> {
 }
 
 impl<'a> WindowContext<'a> {
-    pub(crate) fn scroll_area(&mut self) {
+    pub fn scroll_area(&mut self) {
         let inner_rect = self.window.cursor.scroll.inner_rect_previous_frame;
         let rect = self.window.content_rect();
         let rect = Rect {
@@ -453,7 +453,7 @@ impl<'a> WindowContext<'a> {
         self.window.cursor.scroll.update();
     }
 
-    pub(crate) fn close(&mut self) {
+    pub fn close(&mut self) {
         self.window.want_close = true;
     }
 
@@ -726,7 +726,7 @@ impl Ui {
         self.skin_stack.top().clone()
     }
 
-    pub(crate) fn begin_window(
+    pub fn begin_window(
         &mut self,
         id: Id,
         parent: Option<Id>,
@@ -824,7 +824,7 @@ impl Ui {
         }
     }
 
-    pub(crate) fn begin_modal(&mut self, id: Id, position: Vec2, size: Vec2) -> WindowContext {
+    pub fn begin_modal(&mut self, id: Id, position: Vec2, size: Vec2) -> WindowContext {
         self.input.window_active = true;
         self.in_modal = true;
 
@@ -871,17 +871,17 @@ impl Ui {
         }
     }
 
-    pub(crate) fn end_modal(&mut self) {
+    pub fn end_modal(&mut self) {
         self.in_modal = false;
         self.input.window_active = self.is_input_hovered(self.active_window.unwrap_or(0));
     }
 
-    pub(crate) fn end_window(&mut self) {
+    pub fn end_window(&mut self) {
         self.active_window = self.child_window_stack.pop();
         self.input.window_active = self.is_input_hovered(self.active_window.unwrap_or(0));
     }
 
-    pub(crate) fn get_active_window_context(&mut self) -> WindowContext {
+    pub fn get_active_window_context(&mut self) -> WindowContext {
         let focused;
         let window = if self.in_modal == false {
             match self.active_window {
@@ -1189,7 +1189,7 @@ impl Ui {
     }
 }
 
-pub(crate) mod ui_context {
+pub mod ui_context {
     use crate::prelude::*;
     use crate::window::miniquad::*;
 
@@ -1198,14 +1198,14 @@ pub(crate) mod ui_context {
     use std::cell::RefCell;
     use std::rc::Rc;
 
-    pub(crate) struct UiContext {
+    pub struct UiContext {
         pub ui: Rc<RefCell<megaui::Ui>>,
         ui_draw_list: Vec<megaui::DrawList>,
         material: Option<Material>,
     }
 
     impl UiContext {
-        pub(crate) fn new(
+        pub fn new(
             ctx: &mut dyn miniquad::RenderingBackend,
             screen_width: f32,
             screen_height: f32,
@@ -1219,7 +1219,7 @@ pub(crate) mod ui_context {
             }
         }
 
-        pub(crate) fn process_input(&mut self) {
+        pub fn process_input(&mut self) {
             use megaui::InputHandler;
 
             let mouse_position = mouse_position();
@@ -1280,7 +1280,7 @@ pub(crate) mod ui_context {
             ui.mouse_wheel(wheel_x, -wheel_y);
         }
 
-        pub(crate) fn draw(
+        pub fn draw(
             &mut self,
             ctx: &mut dyn miniquad::RenderingBackend,
             quad_gl: &mut QuadGl,

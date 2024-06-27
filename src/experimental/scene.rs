@@ -80,7 +80,7 @@ impl<T> Handle<T> {
     pub fn as_trait<T1: ?Sized>(&self) {}
 }
 
-pub(crate) struct Lens<T> {
+pub struct Lens<T> {
     handle: HandleUntyped,
     offset: isize,
     _marker: PhantomData<T>,
@@ -95,7 +95,7 @@ impl<T> Lens<T> {
 }
 
 impl<T> Handle<T> {
-    pub(crate) fn lens<F, T1>(&self, f: F) -> Lens<T1>
+    pub fn lens<F, T1>(&self, f: F) -> Lens<T1>
     where
         F: for<'r> FnOnce(&'r mut T) -> &'r mut T1,
     {
@@ -615,7 +615,7 @@ unsafe fn get_scene() -> &'static mut Scene {
     SCENE.get_or_insert(Scene::new())
 }
 
-pub(crate) fn allocated_memory() -> usize {
+pub fn allocated_memory() -> usize {
     unsafe { get_scene() }.arena.allocated_bytes()
 }
 
@@ -653,7 +653,7 @@ pub fn add_node<T: Node>(node: T) -> Handle<T> {
     unsafe { get_scene() }.add_node(node)
 }
 
-pub(crate) fn update() {
+pub fn update() {
     unsafe { get_scene() }.update()
 }
 
@@ -691,10 +691,10 @@ pub fn find_nodes_by_type<T: Any>() -> impl Iterator<Item = RefMut<T>> {
 
 const CONST_FPS: f64 = 1.0 / 60.;
 
-pub(crate) fn in_fixed_update() -> bool {
+pub fn in_fixed_update() -> bool {
     unsafe { get_scene() }.in_fixed_update
 }
 
-pub(crate) fn fixed_frame_time() -> f32 {
+pub fn fixed_frame_time() -> f32 {
     CONST_FPS as _
 }

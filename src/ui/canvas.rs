@@ -9,7 +9,7 @@ use crate::{
 };
 
 pub struct DrawCanvas<'a> {
-    pub(crate) context: WindowContext<'a>,
+    pub context: WindowContext<'a>,
 }
 
 impl<'a> DrawCanvas<'a> {
