@@ -367,32 +367,10 @@ pub fn draw_text_ex(text: &str, x: f32, y: f32, params: TextParams) {
 ///
 /// The text is centered along the X axis, and Y is the very top of the rendered text.
 pub fn draw_text_centered_ex(text: &str, x: f32, y: f32, params: TextParams) {
-	let font = params
-		.font
-		.unwrap_or(&get_context().fonts_storage.default_font);
-	
-	let font_scale_x = params.font_scale * params.font_scale_aspect;
-	let dpi_scaling = miniquad::window::dpi_scale();
-	
-	let font_size = (params.font_size as f32 * dpi_scaling).ceil() as u16;
-	
 	// calculate the width
-	let mut width = 0.;
-	for character in text.chars() {
-		if !font
-			.characters
-			.lock()
-			.unwrap()
-			.contains_key(&(character, font_size))
-		{
-			font.cache_glyph(character, font_size);
-		}
-		let font_data = &font.characters.lock().unwrap()[&(character, font_size)];
-		width += font_data.advance * font_scale_x;
-	}
+	let width = measure_text(text, params.font, params.font_size, params.font_scale).width;
 	draw_text_ex(text, x - width/2.,  y, params);
 }
-
 
 
 /// Returns the width the text would have if it was rendered. Useful for positioning or scaling text in a custom-made UI
