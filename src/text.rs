@@ -14,7 +14,7 @@ use crate::color::WHITE;
 use glam::vec2;
 
 use std::sync::{Arc, Mutex};
-pub(crate) mod atlas;
+pub mod atlas;
 
 use atlas::{Atlas, SpriteKey};
 
