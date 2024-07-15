@@ -62,7 +62,7 @@ pub mod window;
 
 pub mod experimental;
 
-pub mod prelude;
+mod prelude;
 
 pub mod telemetry;
 
